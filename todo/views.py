@@ -2,10 +2,12 @@ from todo.models import Task, CompletedTask
 from todo.serializers import TaskSerializer, CompletedTaskSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 
 @api_view(['GET', 'POST',])
+@permission_classes([IsAuthenticated])
 def tasks(request):
   if request.method == 'GET':
     data = Task.objects.all()
@@ -20,6 +22,7 @@ def tasks(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST', 'DELETE',])
+@permission_classes([IsAuthenticated])
 def task(request, id):
   try:
     data = Task.objects.get(pk=id)
@@ -46,6 +49,7 @@ def task(request, id):
   
 
 @api_view(['GET', 'POST', 'DELETE',])
+@permission_classes([IsAuthenticated])
 def completedTasks(request):
     if request.method == 'GET':
         data = CompletedTask.objects.all()
