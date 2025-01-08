@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST',])
 def tasks(request):
   if request.method == 'GET':
     data = Task.objects.all()
@@ -19,7 +19,7 @@ def tasks(request):
       return Response({'task': serializer.data}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'POST', 'DELETE',])
 def task(request, id):
   try:
     data = Task.objects.get(pk=id)
@@ -45,7 +45,7 @@ def task(request, id):
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
   
 
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'POST', 'DELETE',])
 def completedTasks(request):
     if request.method == 'GET':
         data = CompletedTask.objects.all()

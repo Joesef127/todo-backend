@@ -44,6 +44,10 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
 
+REST_FRAMEWORK = {
+  'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+  }
+
 ROOT_URLCONF = 'todo.urls'
 
 TEMPLATES = [
