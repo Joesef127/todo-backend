@@ -11,14 +11,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 @permission_classes([IsAuthenticated])
 def tasks(request):
   if request.method == 'GET':
-    data = Task.objects.all()
+    data = Task.objects.filter(user=request.user)
     serializer = TaskSerializer(data, many=True)
     return Response({'tasks': serializer.data})
   
   elif request.method == 'POST':
-    serializer = TaskSerializer(data=request.data)
+    serializer = TaskSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
-      serializer.save()
+      serializer.save(user=request.user)
       return Response({'task': serializer.data}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -53,16 +53,16 @@ def task(request, id):
 @permission_classes([IsAuthenticated])
 def completedTasks(request):
     if request.method == 'GET':
-        data = CompletedTask.objects.all()
+        data = CompletedTask.objects.filter(user=request.user)
         serializer = CompletedTaskSerializer(data, many=True)
         return Response({'completed_tasks': serializer.data})
     
     elif request.method == 'POST':
         try:
-            task = Task.objects.get(pk=request.data['id'])
-            serializer = CompletedTaskSerializer(data=request.data)
+            task = Task.objects.get(pk=request.data['id'], user=request.user)
+            serializer = CompletedTaskSerializer(data=request.data, context={'request': request})
             if serializer.is_valid():
-                serializer.save()
+                serializer.save(user=request.user)
                 task.delete()
                 return Response({'completed_task': serializer.data}, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -70,7 +70,7 @@ def completedTasks(request):
             return Response({'error': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)
     
     elif request.method == 'DELETE':
-        completed_tasks = CompletedTask.objects.all()
+        completed_tasks = CompletedTask.objects.filter(user=request.user)
         completed_tasks.delete()
         return Response({'message': 'All completed tasks have been deleted.'}, status=status.HTTP_204_NO_CONTENT)
 
@@ -87,3 +87,4 @@ def register(request):
     return Response(tokens, status=status.HTTP_201_CREATED)
   return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   
+
