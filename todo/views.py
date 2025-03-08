@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 @api_view(['GET', 'POST',])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def tasks(request):
   if request.method == 'GET':
     data = Task.objects.filter(user=request.user)
@@ -23,7 +23,7 @@ def tasks(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'POST', 'DELETE',])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def task(request, id):
   try:
     data = Task.objects.get(pk=id)
@@ -50,7 +50,7 @@ def task(request, id):
   
 
 @api_view(['GET', 'POST', 'DELETE',])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def completedTasks(request):
     if request.method == 'GET':
         data = CompletedTask.objects.filter(user=request.user)
